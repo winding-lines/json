@@ -6,7 +6,7 @@
 from mojson import loads, validate, is_valid
 
 
-fn main() raises:
+def main() raises:
     print("JSON Schema Validation Examples")
     print("=" * 50)
     print()

@@ -7,14 +7,8 @@ struct JSONInput(Movable):
 
     var data: List[UInt8]
 
-    fn __init__(out self, var data: List[UInt8]):
-        self.data = data^
-
-    fn __copyinit__(out self, copy: Self):
-        self.data = copy.data.copy()
-
-    fn __moveinit__(out self, deinit take: Self):
-        self.data = take.data^
+    def __init__(out self, data: List[UInt8]):
+        self.data = data.copy()
 
 
 struct JSONResult(Movable):
@@ -30,25 +24,13 @@ struct JSONResult(Movable):
     var depth: Int
     var file_size: Int
 
-    fn __init__(out self):
+    def __init__(out self):
         self.structural = List[Int32]()
         self.pair_pos = List[Int32]()
         self.depth = 0
         self.file_size = 0
 
-    fn __copyinit__(out self, copy: Self):
-        self.structural = copy.structural.copy()
-        self.pair_pos = copy.pair_pos.copy()
-        self.depth = copy.depth
-        self.file_size = copy.file_size
-
-    fn __moveinit__(out self, deinit take: Self):
-        self.structural = take.structural^
-        self.pair_pos = take.pair_pos^
-        self.depth = take.depth
-        self.file_size = take.file_size
-
-    fn total_result_size(self) -> Int:
+    def total_result_size(self) -> Int:
         return len(self.structural)
 
 
@@ -64,7 +46,7 @@ comptime CHAR_BACKSLASH: UInt8 = 0x5C  # '\'
 comptime CHAR_NEWLINE: UInt8 = 0x0A  # '\n'
 
 
-fn is_structural_char(c: UInt8) -> Bool:
+def is_structural_char(c: UInt8) -> Bool:
     """Check if a character is a JSON structural character."""
     return (
         c == CHAR_OPEN_BRACE
@@ -76,11 +58,11 @@ fn is_structural_char(c: UInt8) -> Bool:
     )
 
 
-fn is_open_bracket(c: UInt8) -> Bool:
+def is_open_bracket(c: UInt8) -> Bool:
     """Check if character is an opening bracket."""
     return c == CHAR_OPEN_BRACE or c == CHAR_OPEN_BRACKET
 
 
-fn is_close_bracket(c: UInt8) -> Bool:
+def is_close_bracket(c: UInt8) -> Bool:
     """Check if character is a closing bracket."""
     return c == CHAR_CLOSE_BRACE or c == CHAR_CLOSE_BRACKET

@@ -13,7 +13,7 @@ from .parser import loads
 from .serialize import dumps
 
 
-fn jsonpath_query(document: Value, path: String) raises -> List[Value]:
+def jsonpath_query(document: Value, path: String) raises -> List[Value]:
     """Query a JSON document using JSONPath syntax.
 
     Supported syntax:
@@ -51,7 +51,7 @@ fn jsonpath_query(document: Value, path: String) raises -> List[Value]:
     return results^
 
 
-fn jsonpath_one(document: Value, path: String) raises -> Value:
+def jsonpath_one(document: Value, path: String) raises -> Value:
     """Query and return a single value (first match).
 
     Args:
@@ -79,29 +79,16 @@ struct JSONPathToken(Copyable, Movable):
     var end: Int
     var step: Int
 
-    fn __init__(out self, type: Int, value: String = ""):
+    def __init__(out self, type: Int, value: String = ""):
         self.type = type
         self.value = value
         self.start = 0
         self.end = -1
         self.step = 1
 
-    fn __copyinit__(out self, copy: Self):
-        self.type = copy.type
-        self.value = copy.value
-        self.start = copy.start
-        self.end = copy.end
-        self.step = copy.step
-
-    fn __moveinit__(out self, deinit take: Self):
-        self.type = take.type
-        self.value = take.value^
-        self.start = take.start
-        self.end = take.end
-        self.step = take.step
 
 
-fn _tokenize_jsonpath(path: String) raises -> List[JSONPathToken]:
+def _tokenize_jsonpath(path: String) raises -> List[JSONPathToken]:
     """Parse JSONPath into tokens."""
     var tokens = List[JSONPathToken]()
     var path_bytes = path.as_bytes()
@@ -217,7 +204,7 @@ fn _tokenize_jsonpath(path: String) raises -> List[JSONPathToken]:
     return tokens^
 
 
-fn _parse_slice(content: String) raises -> JSONPathToken:
+def _parse_slice(content: String) raises -> JSONPathToken:
     """Parse a slice expression like 0:5 or 1:10:2."""
     var token = JSONPathToken(5)  # slice
     var parts = List[String]()
@@ -243,7 +230,7 @@ fn _parse_slice(content: String) raises -> JSONPathToken:
     return token^
 
 
-fn _apply_jsonpath_token(
+def _apply_jsonpath_token(
     var values: List[Value], ref token: JSONPathToken
 ) raises -> List[Value]:
     """Apply a single JSONPath token to a list of values."""
@@ -326,7 +313,7 @@ fn _apply_jsonpath_token(
     return results^
 
 
-fn _recursive_collect(value: Value, mut results: List[Value]):
+def _recursive_collect(value: Value, mut results: List[Value]):
     """Recursively collect all values (for ..)."""
     results.append(value.copy())
 
@@ -346,7 +333,7 @@ fn _recursive_collect(value: Value, mut results: List[Value]):
             pass
 
 
-fn _evaluate_filter(value: Value, expr: String) -> Bool:
+def _evaluate_filter(value: Value, expr: String) -> Bool:
     """Evaluate a basic filter expression.
 
     Supports:
@@ -453,7 +440,7 @@ fn _evaluate_filter(value: Value, expr: String) -> Bool:
     return False
 
 
-fn _values_equal_basic(a: Value, b: Value) -> Bool:
+def _values_equal_basic(a: Value, b: Value) -> Bool:
     """Basic value equality check."""
     if a.is_null() and b.is_null():
         return True
@@ -473,7 +460,7 @@ fn _values_equal_basic(a: Value, b: Value) -> Bool:
     return False
 
 
-fn _compare_values(a: Value, b: Value) -> Int:
+def _compare_values(a: Value, b: Value) -> Int:
     """Compare two values. Returns -1, 0, or 1."""
     if (a.is_int() or a.is_float()) and (b.is_int() or b.is_float()):
         var af = a.float_value() if a.is_float() else Float64(a.int_value())
@@ -494,7 +481,7 @@ fn _compare_values(a: Value, b: Value) -> Int:
     return 0
 
 
-fn _trim(s: String) -> String:
+def _trim(s: String) -> String:
     """Trim whitespace from both ends."""
     var s_bytes = s.as_bytes()
     var start = 0

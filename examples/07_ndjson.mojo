@@ -6,7 +6,7 @@
 from mojson import loads, dumps, load, Value
 
 
-fn main() raises:
+def main() raises:
     print("NDJSON Examples")
     print("=" * 50)
     print()

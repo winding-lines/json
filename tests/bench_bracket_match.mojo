@@ -9,7 +9,7 @@ from mojson.gpu.bracket_match import match_brackets_gpu
 from mojson.types import JSONResult
 
 
-fn generate_brackets(depth: Int, count: Int) -> List[UInt8]:
+def generate_brackets(depth: Int, count: Int) -> List[UInt8]:
     """Generate nested brackets for benchmarking."""
     var result = List[UInt8](capacity=count * 2)
 
@@ -25,7 +25,7 @@ fn generate_brackets(depth: Int, count: Int) -> List[UInt8]:
     return result^
 
 
-fn cpu_bracket_match(char_types: List[UInt8]) -> List[Int32]:
+def cpu_bracket_match(char_types: List[UInt8]) -> List[Int32]:
     """CPU stack-based bracket matching (same as _match_brackets_fast)."""
     var n = len(char_types)
     var pair_pos = List[Int32](capacity=n)
@@ -46,7 +46,7 @@ fn cpu_bracket_match(char_types: List[UInt8]) -> List[Int32]:
     return pair_pos^
 
 
-fn benchmark_bracket_matching(n: Int, iterations: Int) raises:
+def benchmark_bracket_matching(n: Int, iterations: Int) raises:
     """Benchmark GPU vs CPU bracket matching."""
     print("=== Bracket Matching Benchmark ===")
     print("Elements:", n)
@@ -158,7 +158,7 @@ fn benchmark_bracket_matching(n: Int, iterations: Int) raises:
     print("=" * 40)
 
 
-fn main() raises:
+def main() raises:
     # Small test
     benchmark_bracket_matching(1000, 10)
     print()

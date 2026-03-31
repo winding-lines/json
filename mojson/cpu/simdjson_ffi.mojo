@@ -9,7 +9,7 @@ from std.collections import List
 from ..errors import json_parse_error, find_error_position
 
 
-fn _find_simdjson_library() -> String:
+def _find_simdjson_library() -> String:
     """Find the simdjson wrapper library in standard locations."""
     # Check CONDA_PREFIX first (installed via conda/pixi)
     var conda_prefix = getenv("CONDA_PREFIX", "")
@@ -79,7 +79,7 @@ struct SimdjsonFFI:
     # Avoids int-to-UnsafePointer construction in Mojo, which varies across versions.
     var _memcpy_from_addr: fn(Int, Int, Int) -> None
 
-    fn __init__(out self, lib_path: String = "") raises:
+    def __init__(out self, lib_path: String = "") raises:
         """Initialize by loading the simdjson wrapper library.
 
         Args:
@@ -178,13 +178,13 @@ struct SimdjsonFFI:
         if self._parser == 0:
             raise Error("Failed to create simdjson parser")
 
-    fn destroy(mut self):
+    def destroy(mut self):
         """Clean up the parser. Call this explicitly when done."""
         if self._parser != 0:
             self._destroy_parser(self._parser)
             self._parser = 0
 
-    fn parse(mut self, json: String) raises -> Int:
+    def parse(mut self, json: String) raises -> Int:
         """Parse JSON and return root value handle."""
         var json_copy = json
         var c_str = json_copy.as_c_string_slice()
@@ -208,11 +208,11 @@ struct SimdjsonFFI:
 
         return self._get_root(self._parser)
 
-    fn get_type(self, value: Int) -> Int:
+    def get_type(self, value: Int) -> Int:
         """Get the type of a value."""
         return self._value_get_type(value)
 
-    fn get_bool(self, value: Int) raises -> Bool:
+    def get_bool(self, value: Int) raises -> Bool:
         """Get value as boolean."""
         var result = List[Int32](capacity=1)
         result.append(0)
@@ -221,7 +221,7 @@ struct SimdjsonFFI:
             raise Error("Value is not a boolean")
         return result[0] != 0
 
-    fn get_int(self, value: Int) raises -> Int64:
+    def get_int(self, value: Int) raises -> Int64:
         """Get value as int64."""
         var result = List[Int64](capacity=1)
         result.append(0)
@@ -230,7 +230,7 @@ struct SimdjsonFFI:
             raise Error("Value is not an integer")
         return result[0]
 
-    fn get_uint(self, value: Int) raises -> UInt64:
+    def get_uint(self, value: Int) raises -> UInt64:
         """Get value as uint64."""
         var result = List[UInt64](capacity=1)
         result.append(0)
@@ -239,7 +239,7 @@ struct SimdjsonFFI:
             raise Error("Value is not an unsigned integer")
         return result[0]
 
-    fn get_float(self, value: Int) raises -> Float64:
+    def get_float(self, value: Int) raises -> Float64:
         """Get value as double."""
         var result = List[Float64](capacity=1)
         result.append(0.0)
@@ -248,7 +248,7 @@ struct SimdjsonFFI:
             raise Error("Value is not a float")
         return result[0]
 
-    fn get_string(self, value: Int) raises -> String:
+    def get_string(self, value: Int) raises -> String:
         """Get value as string - uses unsafe_from_utf8 for zero-copy."""
         var data_ptr = List[Int](capacity=1)
         data_ptr.append(0)
@@ -275,47 +275,47 @@ struct SimdjsonFFI:
         self._memcpy_from_addr(Int(bytes.unsafe_ptr()), addr, length)
         return String(unsafe_from_utf8=bytes^)
 
-    fn free_value(self, value: Int):
+    def free_value(self, value: Int):
         """Free a value handle."""
         self._value_free(value)
 
-    fn array_count(self, value: Int) -> Int:
+    def array_count(self, value: Int) -> Int:
         """Get array element count."""
         return self._array_count(value)
 
-    fn array_begin(self, value: Int) -> Int:
+    def array_begin(self, value: Int) -> Int:
         """Start iterating over array."""
         return self._array_begin(value)
 
-    fn array_iter_done(self, iter: Int) -> Bool:
+    def array_iter_done(self, iter: Int) -> Bool:
         """Check if array iteration is done."""
         return self._array_iter_done(iter) != 0
 
-    fn array_iter_get(self, iter: Int) -> Int:
+    def array_iter_get(self, iter: Int) -> Int:
         """Get current array element."""
         return self._array_iter_get(iter)
 
-    fn array_iter_next(self, iter: Int):
+    def array_iter_next(self, iter: Int):
         """Move to next array element."""
         self._array_iter_next(iter)
 
-    fn array_iter_free(self, iter: Int):
+    def array_iter_free(self, iter: Int):
         """Free array iterator."""
         self._array_iter_free(iter)
 
-    fn object_count(self, value: Int) -> Int:
+    def object_count(self, value: Int) -> Int:
         """Get object key count."""
         return self._object_count(value)
 
-    fn object_begin(self, value: Int) -> Int:
+    def object_begin(self, value: Int) -> Int:
         """Start iterating over object."""
         return self._object_begin(value)
 
-    fn object_iter_done(self, iter: Int) -> Bool:
+    def object_iter_done(self, iter: Int) -> Bool:
         """Check if object iteration is done."""
         return self._object_iter_done(iter) != 0
 
-    fn object_iter_get_key(self, iter: Int) raises -> String:
+    def object_iter_get_key(self, iter: Int) raises -> String:
         """Get current object key - uses unsafe_from_utf8 for zero-copy."""
         var data_ptr = List[Int](capacity=1)
         data_ptr.append(0)
@@ -342,14 +342,14 @@ struct SimdjsonFFI:
         self._memcpy_from_addr(Int(bytes.unsafe_ptr()), addr, length)
         return String(unsafe_from_utf8=bytes^)
 
-    fn object_iter_get_value(self, iter: Int) -> Int:
+    def object_iter_get_value(self, iter: Int) -> Int:
         """Get current object value."""
         return self._object_iter_get_value(iter)
 
-    fn object_iter_next(self, iter: Int):
+    def object_iter_next(self, iter: Int):
         """Move to next object key-value pair."""
         self._object_iter_next(iter)
 
-    fn object_iter_free(self, iter: Int):
+    def object_iter_free(self, iter: Int):
         """Free object iterator."""
         self._object_iter_free(iter)

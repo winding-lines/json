@@ -6,7 +6,7 @@ from mojson import load, dump, loads, dumps, Value
 from std.os import remove
 
 
-fn main() raises:
+def main() raises:
     # Create a sample JSON file
     var sample_data = loads(
         '{"users": [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}], "total": 2}'

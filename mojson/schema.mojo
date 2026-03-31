@@ -15,19 +15,11 @@ struct ValidationError(Copyable, Movable):
     var path: String
     var message: String
 
-    fn __init__(out self, path: String, message: String):
+    def __init__(out self, path: String, message: String):
         self.path = path
         self.message = message
 
-    fn __copyinit__(out self, copy: Self):
-        self.path = copy.path
-        self.message = copy.message
-
-    fn __moveinit__(out self, deinit take: Self):
-        self.path = take.path^
-        self.message = take.message^
-
-    fn __str__(self) -> String:
+    def __str__(self) -> String:
         if self.path == "":
             return self.message
         return self.path + ": " + self.message
@@ -39,20 +31,16 @@ struct ValidationResult(Movable):
     var valid: Bool
     var errors: List[ValidationError]
 
-    fn __init__(out self):
+    def __init__(out self):
         self.valid = True
         self.errors = List[ValidationError]()
 
-    fn __moveinit__(out self, deinit take: Self):
-        self.valid = take.valid
-        self.errors = take.errors^
-
-    fn add_error(mut self, path: String, message: String):
+    def add_error(mut self, path: String, message: String):
         self.valid = False
         self.errors.append(ValidationError(path, message))
 
 
-fn validate(document: Value, schema: Value) raises -> ValidationResult:
+def validate(document: Value, schema: Value) raises -> ValidationResult:
     """Validate a JSON document against a JSON Schema.
 
     Supported schema keywords:
@@ -90,7 +78,7 @@ fn validate(document: Value, schema: Value) raises -> ValidationResult:
     return result^
 
 
-fn is_valid(document: Value, schema: Value) raises -> Bool:
+def is_valid(document: Value, schema: Value) raises -> Bool:
     """Check if a document is valid against a schema.
 
     Args:
@@ -104,7 +92,7 @@ fn is_valid(document: Value, schema: Value) raises -> Bool:
     return result.valid
 
 
-fn _validate_value(
+def _validate_value(
     value: Value,
     schema: Value,
     path: String,
@@ -186,7 +174,7 @@ fn _validate_value(
         pass
 
 
-fn _validate_type(
+def _validate_type(
     value: Value,
     type_name: String,
     path: String,
@@ -214,7 +202,7 @@ fn _validate_type(
         result.add_error(path, "Expected type " + type_name)
 
 
-fn _validate_type_array(
+def _validate_type_array(
     value: Value,
     types: Value,
     path: String,
@@ -238,7 +226,7 @@ fn _validate_type_array(
         pass
 
 
-fn _validate_enum(
+def _validate_enum(
     value: Value,
     enum_val: Value,
     path: String,
@@ -255,7 +243,7 @@ fn _validate_enum(
         pass
 
 
-fn _validate_const(
+def _validate_const(
     value: Value,
     const_val: Value,
     path: String,
@@ -266,7 +254,7 @@ fn _validate_const(
         result.add_error(path, "Value does not equal const")
 
 
-fn _validate_number(
+def _validate_number(
     value: Value,
     schema: Value,
     path: String,
@@ -336,7 +324,7 @@ fn _validate_number(
         pass
 
 
-fn _validate_string(
+def _validate_string(
     value: Value,
     schema: Value,
     path: String,
@@ -384,7 +372,7 @@ fn _validate_string(
         pass
 
 
-fn _validate_array(
+def _validate_array(
     value: Value,
     schema: Value,
     path: String,
@@ -450,7 +438,7 @@ fn _validate_array(
         pass
 
 
-fn _validate_object(
+def _validate_object(
     value: Value,
     schema: Value,
     path: String,
@@ -557,7 +545,7 @@ fn _validate_object(
         pass
 
 
-fn _validate_all_of(
+def _validate_all_of(
     value: Value,
     schemas: Value,
     path: String,
@@ -572,7 +560,7 @@ fn _validate_all_of(
         pass
 
 
-fn _validate_any_of(
+def _validate_any_of(
     value: Value,
     schemas: Value,
     path: String,
@@ -591,7 +579,7 @@ fn _validate_any_of(
         pass
 
 
-fn _validate_one_of(
+def _validate_one_of(
     value: Value,
     schemas: Value,
     path: String,
@@ -618,7 +606,7 @@ fn _validate_one_of(
         pass
 
 
-fn _validate_not(
+def _validate_not(
     value: Value,
     schema: Value,
     path: String,
@@ -631,7 +619,7 @@ fn _validate_not(
         result.add_error(path, "Value should not match schema in 'not'")
 
 
-fn _values_equal(a: Value, b: Value) -> Bool:
+def _values_equal(a: Value, b: Value) -> Bool:
     """Check if two values are equal."""
     if a.is_null() and b.is_null():
         return True

@@ -7,13 +7,13 @@ from .unicode import unescape_json_string
 struct Null(Writable):
     """Represents JSON null."""
 
-    fn __init__(out self):
+    def __init__(out self):
         pass
 
-    fn __str__(self) -> String:
+    def __str__(self) -> String:
         return "null"
 
-    fn write_to[W: Writer](self, mut writer: W):
+    def write_to[W: Writer](self, mut writer: W):
         writer.write("null")
 
 
@@ -30,7 +30,7 @@ struct Value(Copyable, Movable, Writable):
     var _keys: List[String]  # Object keys
     var _count: Int  # Array/object element count
 
-    fn __init__(out self, null: Null):
+    def __init__(out self, null: Null):
         self._type = 0
         self._bool = False
         self._int = 0
@@ -40,7 +40,7 @@ struct Value(Copyable, Movable, Writable):
         self._keys = List[String]()
         self._count = 0
 
-    fn __init__(out self, none: NoneType):
+    def __init__(out self, none: NoneType):
         self._type = 0
         self._bool = False
         self._int = 0
@@ -50,7 +50,7 @@ struct Value(Copyable, Movable, Writable):
         self._keys = List[String]()
         self._count = 0
 
-    fn __init__(out self, b: Bool):
+    def __init__(out self, b: Bool):
         self._type = 1
         self._bool = b
         self._int = 0
@@ -60,7 +60,7 @@ struct Value(Copyable, Movable, Writable):
         self._keys = List[String]()
         self._count = 0
 
-    fn __init__(out self, i: Int):
+    def __init__(out self, i: Int):
         self._type = 2
         self._bool = False
         self._int = Int64(i)
@@ -70,7 +70,7 @@ struct Value(Copyable, Movable, Writable):
         self._keys = List[String]()
         self._count = 0
 
-    fn __init__(out self, i: Int64):
+    def __init__(out self, i: Int64):
         self._type = 2
         self._bool = False
         self._int = i
@@ -80,7 +80,7 @@ struct Value(Copyable, Movable, Writable):
         self._keys = List[String]()
         self._count = 0
 
-    fn __init__(out self, f: Float64):
+    def __init__(out self, f: Float64):
         self._type = 3
         self._bool = False
         self._int = 0
@@ -90,7 +90,7 @@ struct Value(Copyable, Movable, Writable):
         self._keys = List[String]()
         self._count = 0
 
-    fn __init__(out self, s: String):
+    def __init__(out self, s: String):
         self._type = 4
         self._bool = False
         self._int = 0
@@ -100,7 +100,7 @@ struct Value(Copyable, Movable, Writable):
         self._keys = List[String]()
         self._count = 0
 
-    fn copy(self) -> Self:
+    def copy(self) -> Self:
         """Create a deep copy of this Value.
 
         Returns a completely independent copy. Modifications to the
@@ -120,7 +120,7 @@ struct Value(Copyable, Movable, Writable):
         v._count = self._count
         return v^
 
-    fn clone(self) -> Self:
+    def clone(self) -> Self:
         """Alias for copy(). Creates a deep copy of this Value.
 
         Returns:
@@ -129,57 +129,57 @@ struct Value(Copyable, Movable, Writable):
         return self.copy()
 
     # Type checking
-    fn is_null(self) -> Bool:
+    def is_null(self) -> Bool:
         return self._type == 0
 
-    fn is_bool(self) -> Bool:
+    def is_bool(self) -> Bool:
         return self._type == 1
 
-    fn is_int(self) -> Bool:
+    def is_int(self) -> Bool:
         return self._type == 2
 
-    fn is_float(self) -> Bool:
+    def is_float(self) -> Bool:
         return self._type == 3
 
-    fn is_string(self) -> Bool:
+    def is_string(self) -> Bool:
         return self._type == 4
 
-    fn is_array(self) -> Bool:
+    def is_array(self) -> Bool:
         return self._type == 5
 
-    fn is_object(self) -> Bool:
+    def is_object(self) -> Bool:
         return self._type == 6
 
-    fn is_number(self) -> Bool:
+    def is_number(self) -> Bool:
         return self._type == 2 or self._type == 3
 
     # Value extraction
-    fn bool_value(self) -> Bool:
+    def bool_value(self) -> Bool:
         return self._bool
 
-    fn int_value(self) -> Int64:
+    def int_value(self) -> Int64:
         return self._int
 
-    fn float_value(self) -> Float64:
+    def float_value(self) -> Float64:
         return self._float
 
-    fn string_value(self) -> String:
+    def string_value(self) -> String:
         return self._string
 
-    fn raw_json(self) -> String:
+    def raw_json(self) -> String:
         return self._raw
 
-    fn array_count(self) -> Int:
+    def array_count(self) -> Int:
         return self._count
 
-    fn object_keys(self) -> List[String]:
+    def object_keys(self) -> List[String]:
         return self._keys.copy()
 
-    fn object_count(self) -> Int:
+    def object_count(self) -> Int:
         return self._count
 
     # Stringable
-    fn __str__(self) -> String:
+    def __str__(self) -> String:
         if self._type == 0:
             return "null"
         elif self._type == 1:
@@ -194,11 +194,11 @@ struct Value(Copyable, Movable, Writable):
             return self._raw
         return "unknown"
 
-    fn write_to[W: Writer](self, mut writer: W):
+    def write_to[W: Writer](self, mut writer: W):
         writer.write(self.__str__())
 
     # Equality
-    fn __eq__(self, other: Value) -> Bool:
+    def __eq__(self, other: Value) -> Bool:
         if self._type != other._type:
             return False
         if self._type == 0:
@@ -215,10 +215,10 @@ struct Value(Copyable, Movable, Writable):
             return self._raw == other._raw
         return False
 
-    fn __ne__(self, other: Value) -> Bool:
+    def __ne__(self, other: Value) -> Bool:
         return not self.__eq__(other)
 
-    fn get(self, key: String) raises -> String:
+    def get(self, key: String) raises -> String:
         """Get a field value from a JSON object as a string.
 
         This is a helper for deserialization. For objects, it parses
@@ -249,7 +249,7 @@ struct Value(Copyable, Movable, Writable):
         # Parse the raw JSON to extract the value
         return _extract_field_value(self._raw, key)
 
-    fn array_items(self) raises -> List[Value]:
+    def array_items(self) raises -> List[Value]:
         """Get all items in a JSON array as a list of Values.
 
         Returns:
@@ -280,7 +280,7 @@ struct Value(Copyable, Movable, Writable):
 
         return result^
 
-    fn object_items(self) raises -> List[Tuple[String, Value]]:
+    def object_items(self) raises -> List[Tuple[String, Value]]:
         """Get all key-value pairs in a JSON object.
 
         Returns:
@@ -310,7 +310,7 @@ struct Value(Copyable, Movable, Writable):
 
         return result^
 
-    fn __getitem__(self, index: Int) raises -> Value:
+    def __getitem__(self, index: Int) raises -> Value:
         """Get array element by index.
 
         Args:
@@ -331,7 +331,7 @@ struct Value(Copyable, Movable, Writable):
         var elem_str = _extract_array_element(self._raw, index)
         return _parse_json_value_to_value(elem_str)
 
-    fn __getitem__(self, key: String) raises -> Value:
+    def __getitem__(self, key: String) raises -> Value:
         """Get object value by key.
 
         Args:
@@ -360,7 +360,7 @@ struct Value(Copyable, Movable, Writable):
         var value_str = _extract_field_value(self._raw, key)
         return _parse_json_value_to_value(value_str)
 
-    fn set(mut self, key: String, value: Value) raises:
+    def set(mut self, key: String, value: Value) raises:
         """Set or update a value in a JSON object.
 
         Args:
@@ -393,7 +393,7 @@ struct Value(Copyable, Movable, Writable):
             self._count += 1
             self._raw = _add_object_key(self._raw, key, value_json)
 
-    fn set(mut self, index: Int, value: Value) raises:
+    def set(mut self, index: Int, value: Value) raises:
         """Set a value at an array index.
 
         Args:
@@ -412,7 +412,7 @@ struct Value(Copyable, Movable, Writable):
         var value_json = _value_to_json(value)
         self._raw = _update_array_element(self._raw, index, value_json)
 
-    fn append(mut self, value: Value) raises:
+    def append(mut self, value: Value) raises:
         """Append a value to a JSON array.
 
         Args:
@@ -429,7 +429,7 @@ struct Value(Copyable, Movable, Writable):
         self._count += 1
         self._raw = _append_to_array(self._raw, value_json)
 
-    fn at(self, pointer: String) raises -> Value:
+    def at(self, pointer: String) raises -> Value:
         """Navigate to a value using JSON Pointer (RFC 6901).
 
         JSON Pointer syntax:
@@ -467,7 +467,7 @@ struct Value(Copyable, Movable, Writable):
         return _navigate_pointer(self, tokens)
 
 
-fn make_array_value(raw: String, count: Int) -> Value:
+def make_array_value(raw: String, count: Int) -> Value:
     """Create an array Value from raw JSON."""
     var v = Value(Null())
     v._type = 5
@@ -476,7 +476,7 @@ fn make_array_value(raw: String, count: Int) -> Value:
     return v^
 
 
-fn make_object_value(raw: String, var keys: List[String]) -> Value:
+def make_object_value(raw: String, var keys: List[String]) -> Value:
     """Create an object Value from raw JSON and keys."""
     var v = Value(Null())
     v._type = 6
@@ -486,7 +486,7 @@ fn make_object_value(raw: String, var keys: List[String]) -> Value:
     return v^
 
 
-fn _extract_field_value(raw: String, key: String) raises -> String:
+def _extract_field_value(raw: String, key: String) raises -> String:
     """Extract a field's value from raw JSON object string.
 
     Args:
@@ -568,7 +568,7 @@ fn _extract_field_value(raw: String, key: String) raises -> String:
     raise Error("Key not found in JSON object")
 
 
-fn _extract_json_value(raw: String, start: Int) raises -> String:
+def _extract_json_value(raw: String, start: Int) raises -> String:
     """Extract a single JSON value starting at position start."""
     var raw_bytes = raw.as_bytes()
     var i = start
@@ -643,7 +643,7 @@ fn _extract_json_value(raw: String, start: Int) raises -> String:
         return String(String(unsafe_from_utf8=raw.as_bytes()[value_start:i]))
 
 
-fn _parse_json_pointer(pointer: String) raises -> List[String]:
+def _parse_json_pointer(pointer: String) raises -> List[String]:
     """Parse a JSON Pointer string into tokens.
 
     Handles RFC 6901 escape sequences:
@@ -677,7 +677,7 @@ fn _parse_json_pointer(pointer: String) raises -> List[String]:
     return tokens^
 
 
-fn _navigate_pointer(v: Value, tokens: List[String]) raises -> Value:
+def _navigate_pointer(v: Value, tokens: List[String]) raises -> Value:
     """Navigate through a Value using parsed pointer tokens."""
     if len(tokens) == 0:
         return v.copy()
@@ -728,7 +728,7 @@ fn _navigate_pointer(v: Value, tokens: List[String]) raises -> Value:
         )
 
 
-fn _extract_array_element(raw: String, index: Int) raises -> String:
+def _extract_array_element(raw: String, index: Int) raises -> String:
     """Extract an array element by index from raw JSON array string."""
     var raw_bytes = raw.as_bytes()
     var n = len(raw_bytes)
@@ -818,7 +818,7 @@ fn _extract_array_element(raw: String, index: Int) raises -> String:
     raise Error("Array index out of bounds: " + String(index))
 
 
-fn _parse_json_value_to_value(json_str: String) raises -> Value:
+def _parse_json_value_to_value(json_str: String) raises -> Value:
     """Parse a raw JSON value string into a Value."""
     var s = json_str
     var s_bytes = s.as_bytes()
@@ -926,7 +926,7 @@ fn _parse_json_value_to_value(json_str: String) raises -> Value:
     raise Error("Invalid JSON value: " + s)
 
 
-fn _count_array_elements(raw: String) -> Int:
+def _count_array_elements(raw: String) -> Int:
     """Count elements in a JSON array."""
     var raw_bytes = raw.as_bytes()
     var n = len(raw_bytes)
@@ -987,7 +987,7 @@ fn _count_array_elements(raw: String) -> Int:
     return count
 
 
-fn _extract_object_keys(raw: String) -> List[String]:
+def _extract_object_keys(raw: String) -> List[String]:
     """Extract all keys from a JSON object."""
     var keys = List[String]()
     var raw_bytes = raw.as_bytes()
@@ -1036,7 +1036,7 @@ fn _extract_object_keys(raw: String) -> List[String]:
     return keys^
 
 
-fn _value_to_json(v: Value) -> String:
+def _value_to_json(v: Value) -> String:
     """Convert a Value to its JSON string representation."""
     if v.is_null():
         return "null"
@@ -1072,7 +1072,7 @@ fn _value_to_json(v: Value) -> String:
     return "null"
 
 
-fn _update_object_value(raw: String, key: String, new_value: String) -> String:
+def _update_object_value(raw: String, key: String, new_value: String) -> String:
     """Update a value in a JSON object."""
     var raw_bytes = raw.as_bytes()
     var n = len(raw_bytes)
@@ -1138,7 +1138,7 @@ fn _update_object_value(raw: String, key: String, new_value: String) -> String:
     return raw  # Key not found, return unchanged
 
 
-fn _find_value_end_str(raw: String, start: Int) -> Int:
+def _find_value_end_str(raw: String, start: Int) -> Int:
     """Find the end of a JSON value starting at start."""
     var raw_bytes = raw.as_bytes()
     var n = len(raw_bytes)
@@ -1184,7 +1184,7 @@ fn _find_value_end_str(raw: String, start: Int) -> Int:
     return i
 
 
-fn _add_object_key(raw: String, key: String, value: String) -> String:
+def _add_object_key(raw: String, key: String, value: String) -> String:
     """Add a new key-value pair to a JSON object."""
     var raw_bytes = raw.as_bytes()
     var n = len(raw_bytes)
@@ -1223,7 +1223,7 @@ fn _add_object_key(raw: String, key: String, value: String) -> String:
         )
 
 
-fn _update_array_element(raw: String, index: Int, new_value: String) -> String:
+def _update_array_element(raw: String, index: Int, new_value: String) -> String:
     """Update an element in a JSON array."""
     var raw_bytes = raw.as_bytes()
     var n = len(raw_bytes)
@@ -1277,7 +1277,7 @@ fn _update_array_element(raw: String, index: Int, new_value: String) -> String:
     return raw  # Index not found
 
 
-fn _append_to_array(raw: String, value: String) -> String:
+def _append_to_array(raw: String, value: String) -> String:
     """Append a value to a JSON array."""
     var raw_bytes = raw.as_bytes()
     var n = len(raw_bytes)

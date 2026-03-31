@@ -22,7 +22,7 @@ struct Person(Copyable, Deserializable, Movable, Serializable):
     var age: Int
     var active: Bool
 
-    fn to_json(self) -> String:
+    def to_json(self) -> String:
         return (
             '{"name":'
             + to_json_value(self.name)
@@ -34,7 +34,7 @@ struct Person(Copyable, Deserializable, Movable, Serializable):
         )
 
     @staticmethod
-    fn from_json(json: Value) raises -> Self:
+    def from_json(json: Value) raises -> Self:
         return Self(
             name=get_string(json, "name"),
             age=get_int(json, "age"),
@@ -50,7 +50,7 @@ struct Product(Copyable, Deserializable, Movable, Serializable):
     var price: Float64
     var quantity: Int
 
-    fn to_json(self) -> String:
+    def to_json(self) -> String:
         return (
             '{"name":'
             + to_json_value(self.name)
@@ -62,7 +62,7 @@ struct Product(Copyable, Deserializable, Movable, Serializable):
         )
 
     @staticmethod
-    fn from_json(json: Value) raises -> Self:
+    def from_json(json: Value) raises -> Self:
         return Self(
             name=get_string(json, "name"),
             price=get_float(json, "price"),
@@ -70,7 +70,7 @@ struct Product(Copyable, Deserializable, Movable, Serializable):
         )
 
 
-fn test_serialize() raises:
+def test_serialize() raises:
     """Test serialize() function."""
     var person = Person(name="Alice", age=30, active=True)
     var json_str = serialize(person)
@@ -84,7 +84,7 @@ fn test_serialize() raises:
     print("✓ test_serialize passed")
 
 
-fn test_deserialize() raises:
+def test_deserialize() raises:
     """Test deserialize() function."""
     var json_str = '{"name":"Bob","age":25,"active":false}'
     var person = deserialize[Person](json_str)
@@ -95,7 +95,7 @@ fn test_deserialize() raises:
     print("✓ test_deserialize passed")
 
 
-fn test_round_trip() raises:
+def test_round_trip() raises:
     """Test full round-trip: object -> JSON -> object."""
     var original = Person(name="Charlie", age=35, active=True)
 
@@ -112,7 +112,7 @@ fn test_round_trip() raises:
     print("✓ test_round_trip passed")
 
 
-fn test_product_round_trip() raises:
+def test_product_round_trip() raises:
     """Test round-trip with float fields."""
     var original = Product(name="Widget", price=29.99, quantity=100)
 
@@ -125,7 +125,7 @@ fn test_product_round_trip() raises:
     print("✓ test_product_round_trip passed")
 
 
-fn test_deserialize_cpu() raises:
+def test_deserialize_cpu() raises:
     """Test deserialize with CPU backend (default)."""
     var json_str = '{"name":"Dave","age":40,"active":true}'
     var person = deserialize[Person](json_str)
@@ -135,7 +135,7 @@ fn test_deserialize_cpu() raises:
     print("✓ test_deserialize_cpu passed")
 
 
-fn test_string_escaping() raises:
+def test_string_escaping() raises:
     """Test that special characters are properly escaped."""
     var person = Person(name='Alice "Wonder"', age=30, active=True)
     var json_str = serialize(person)
@@ -146,7 +146,7 @@ fn test_string_escaping() raises:
     print("✓ test_string_escaping passed")
 
 
-fn test_error_handling() raises:
+def test_error_handling() raises:
     """Test error handling for invalid JSON."""
     var json_str = '{"name":"Invalid","age":"not_a_number","active":true}'
 
@@ -160,7 +160,7 @@ fn test_error_handling() raises:
     print("✓ test_error_handling passed")
 
 
-fn main() raises:
+def main() raises:
     print("Running Serializable/Deserializable tests...")
     print()
 

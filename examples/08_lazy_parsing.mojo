@@ -6,7 +6,7 @@
 from mojson import loads, LazyValue
 
 
-fn main() raises:
+def main() raises:
     print("Lazy Parsing Examples")
     print("=" * 50)
     print()

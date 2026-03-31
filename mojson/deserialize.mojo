@@ -4,7 +4,7 @@ from .value import Value
 from .parser import loads
 
 
-fn get_string(value: Value, key: String) raises -> String:
+def get_string(value: Value, key: String) raises -> String:
     """Extract a string field from a JSON object Value.
 
     Args:
@@ -25,7 +25,7 @@ fn get_string(value: Value, key: String) raises -> String:
     return parsed.string_value()
 
 
-fn get_int(value: Value, key: String) raises -> Int:
+def get_int(value: Value, key: String) raises -> Int:
     """Extract an int field from a JSON object Value.
 
     Args:
@@ -46,7 +46,7 @@ fn get_int(value: Value, key: String) raises -> Int:
     return Int(parsed.int_value())
 
 
-fn get_bool(value: Value, key: String) raises -> Bool:
+def get_bool(value: Value, key: String) raises -> Bool:
     """Extract a bool field from a JSON object Value.
 
     Args:
@@ -67,7 +67,7 @@ fn get_bool(value: Value, key: String) raises -> Bool:
     return parsed.bool_value()
 
 
-fn get_float(value: Value, key: String) raises -> Float64:
+def get_float(value: Value, key: String) raises -> Float64:
     """Extract a float field from a JSON object Value.
 
     Args:
@@ -102,7 +102,7 @@ trait Deserializable:
             var age: Int
 
             @staticmethod
-            fn from_json(json: Value) raises -> Self:
+            def from_json(json: Value) raises -> Self:
                 return Self(
                     name=get_string(json, "name"),
                     age=get_int(json, "age")
@@ -112,12 +112,12 @@ trait Deserializable:
     """
 
     @staticmethod
-    fn from_json(json: Value) raises -> Self:
+    def from_json(json: Value) raises -> Self:
         """Deserialize from a JSON Value."""
         ...
 
 
-fn deserialize[
+def deserialize[
     T: Deserializable, target: StaticString = "cpu"
 ](json_str: String) raises -> T:
     """Deserialize a JSON string into a typed object.

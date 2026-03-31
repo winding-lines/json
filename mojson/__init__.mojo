@@ -261,7 +261,7 @@ struct Person(Serializable):
     var name: String
     var age: Int
 
-    fn to_json(self) -> String:
+    def to_json(self) -> String:
         return '{"name":' + to_json_value(self.name) +
                ',"age":' + to_json_value(self.age) + '}'
 
@@ -278,7 +278,7 @@ struct Person(Deserializable):
     var age: Int
 
     @staticmethod
-    fn from_json(json: Value) raises -> Self:
+    def from_json(json: Value) raises -> Self:
         return Self(
             name=get_string(json, "name"),
             age=get_int(json, "age")

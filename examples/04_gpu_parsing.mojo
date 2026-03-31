@@ -8,7 +8,7 @@
 from mojson import loads, load, dumps, Value
 
 
-fn main() raises:
+def main() raises:
     print("GPU-Accelerated JSON Parsing")
     print("=" * 40)
     print()

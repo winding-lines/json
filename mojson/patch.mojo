@@ -14,7 +14,7 @@ from .serialize import dumps
 # =============================================================================
 
 
-fn apply_patch(document: Value, patch: Value) raises -> Value:
+def apply_patch(document: Value, patch: Value) raises -> Value:
     """Apply a JSON Patch (RFC 6902) to a document.
 
     The patch is a JSON array of operations. Each operation has:
@@ -49,7 +49,7 @@ fn apply_patch(document: Value, patch: Value) raises -> Value:
     return result^
 
 
-fn _apply_operation(document: Value, operation: Value) raises -> Value:
+def _apply_operation(document: Value, operation: Value) raises -> Value:
     """Apply a single patch operation."""
     if not operation.is_object():
         raise Error("Patch operation must be an object")
@@ -79,7 +79,7 @@ fn _apply_operation(document: Value, operation: Value) raises -> Value:
         raise Error("Unknown patch operation: " + op_type)
 
 
-fn _patch_add(document: Value, path: String, value: Value) raises -> Value:
+def _patch_add(document: Value, path: String, value: Value) raises -> Value:
     """Add a value at the specified path."""
     if path == "":
         return value.copy()
@@ -118,7 +118,7 @@ fn _patch_add(document: Value, path: String, value: Value) raises -> Value:
     return result^
 
 
-fn _patch_remove(document: Value, path: String) raises -> Value:
+def _patch_remove(document: Value, path: String) raises -> Value:
     """Remove the value at the specified path."""
     if path == "":
         raise Error("Cannot remove root document")
@@ -150,7 +150,7 @@ fn _patch_remove(document: Value, path: String) raises -> Value:
     return result^
 
 
-fn _patch_replace(document: Value, path: String, value: Value) raises -> Value:
+def _patch_replace(document: Value, path: String, value: Value) raises -> Value:
     """Replace the value at the specified path."""
     if path == "":
         return value.copy()
@@ -161,7 +161,7 @@ fn _patch_replace(document: Value, path: String, value: Value) raises -> Value:
     return _set_at_path(document.copy(), path, value)
 
 
-fn _patch_move(
+def _patch_move(
     document: Value, from_path: String, to_path: String
 ) raises -> Value:
     """Move a value from one path to another."""
@@ -170,7 +170,7 @@ fn _patch_move(
     return _patch_add(temp, to_path, value)
 
 
-fn _patch_copy(
+def _patch_copy(
     document: Value, from_path: String, to_path: String
 ) raises -> Value:
     """Copy a value from one path to another."""
@@ -178,7 +178,7 @@ fn _patch_copy(
     return _patch_add(document, to_path, value)
 
 
-fn _patch_test(document: Value, path: String, value: Value) raises:
+def _patch_test(document: Value, path: String, value: Value) raises:
     """Test that a value at the path equals the expected value."""
     var actual = document.at(path)
     if not _values_equal(actual, value):
@@ -190,7 +190,7 @@ fn _patch_test(document: Value, path: String, value: Value) raises:
 # =============================================================================
 
 
-fn merge_patch(target: Value, patch: Value) raises -> Value:
+def merge_patch(target: Value, patch: Value) raises -> Value:
     """Apply a JSON Merge Patch (RFC 7396) to a document.
 
     Merge patch rules:
@@ -242,7 +242,7 @@ fn merge_patch(target: Value, patch: Value) raises -> Value:
     return result^
 
 
-fn create_merge_patch(source: Value, target: Value) raises -> Value:
+def create_merge_patch(source: Value, target: Value) raises -> Value:
     """Create a merge patch that transforms source into target.
 
     Args:
@@ -315,7 +315,7 @@ fn create_merge_patch(source: Value, target: Value) raises -> Value:
 # =============================================================================
 
 
-fn _get_parent_path(path: String) -> String:
+def _get_parent_path(path: String) -> String:
     """Get the parent path (everything before the last /)."""
     var last_slash = -1
     var path_bytes = path.as_bytes()
@@ -328,7 +328,7 @@ fn _get_parent_path(path: String) -> String:
     return String(String(unsafe_from_utf8=path.as_bytes()[:last_slash]))
 
 
-fn _get_last_token(path: String) -> String:
+def _get_last_token(path: String) -> String:
     """Get the last token from a JSON Pointer path."""
     var last_slash = -1
     var path_bytes = path.as_bytes()
@@ -347,7 +347,7 @@ fn _get_last_token(path: String) -> String:
     return token^
 
 
-fn _unescape_pointer_token(token: String) -> String:
+def _unescape_pointer_token(token: String) -> String:
     """Unescape JSON Pointer token (~1 -> /, ~0 -> ~)."""
     var result = String()
     var token_bytes = token.as_bytes()
@@ -367,7 +367,7 @@ fn _unescape_pointer_token(token: String) -> String:
     return result^
 
 
-fn _parse_array_index(token: String, max_index: Int) raises -> Int:
+def _parse_array_index(token: String, max_index: Int) raises -> Int:
     """Parse an array index from a JSON Pointer token."""
     if token == "-":
         return max_index
@@ -384,7 +384,7 @@ fn _parse_array_index(token: String, max_index: Int) raises -> Int:
     return idx
 
 
-fn _set_at_path(document: Value, path: String, value: Value) raises -> Value:
+def _set_at_path(document: Value, path: String, value: Value) raises -> Value:
     """Set a value at the given JSON Pointer path."""
     if path == "":
         return value.copy()
@@ -408,7 +408,7 @@ fn _set_at_path(document: Value, path: String, value: Value) raises -> Value:
     return result^
 
 
-fn _set_nested(
+def _set_nested(
     document: Value, tokens: List[String], idx: Int, value: Value
 ) raises -> Value:
     """Recursively set a nested value."""
@@ -441,7 +441,7 @@ fn _set_nested(
     return result^
 
 
-fn _parse_path_tokens(path: String) -> List[String]:
+def _parse_path_tokens(path: String) -> List[String]:
     """Parse a JSON Pointer path into tokens."""
     var tokens = List[String]()
     if path == "":
@@ -461,7 +461,7 @@ fn _parse_path_tokens(path: String) -> List[String]:
     return tokens^
 
 
-fn _remove_object_key(obj: Value, key: String) raises -> Value:
+def _remove_object_key(obj: Value, key: String) raises -> Value:
     """Remove a key from an object."""
     if not obj.is_object():
         raise Error("Cannot remove key from non-object")
@@ -482,7 +482,7 @@ fn _remove_object_key(obj: Value, key: String) raises -> Value:
     return loads(json)
 
 
-fn _array_insert(arr: Value, idx: Int, value: Value) raises -> Value:
+def _array_insert(arr: Value, idx: Int, value: Value) raises -> Value:
     """Insert a value into an array at the given index."""
     if not arr.is_array():
         raise Error("Cannot insert into non-array")
@@ -521,7 +521,7 @@ fn _array_insert(arr: Value, idx: Int, value: Value) raises -> Value:
     return loads(json)
 
 
-fn _array_remove(arr: Value, idx: Int) raises -> Value:
+def _array_remove(arr: Value, idx: Int) raises -> Value:
     """Remove an element from an array at the given index."""
     if not arr.is_array():
         raise Error("Cannot remove from non-array")
@@ -544,7 +544,7 @@ fn _array_remove(arr: Value, idx: Int) raises -> Value:
     return loads(json)
 
 
-fn _values_equal(a: Value, b: Value) -> Bool:
+def _values_equal(a: Value, b: Value) -> Bool:
     """Check if two values are equal."""
     if a.is_null() and b.is_null():
         return True

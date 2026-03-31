@@ -20,7 +20,7 @@ struct Person(Serializable, Deserializable, Copyable, Movable):
     var age: Int
     var active: Bool
 
-    fn to_json(self) -> String:
+    def to_json(self) -> String:
         """Serialize to JSON string."""
         return (
             '{"name":'
@@ -33,7 +33,7 @@ struct Person(Serializable, Deserializable, Copyable, Movable):
         )
 
     @staticmethod
-    fn from_json(json: Value) raises -> Self:
+    def from_json(json: Value) raises -> Self:
         """Deserialize from JSON Value."""
         return Self(
             name=get_string(json, "name"),
@@ -42,7 +42,7 @@ struct Person(Serializable, Deserializable, Copyable, Movable):
         )
 
 
-fn example_serialize():
+def example_serialize():
     """Demonstrate serialization."""
     print("=== Serialization ===\n")
 
@@ -55,7 +55,7 @@ fn example_serialize():
     print()
 
 
-fn example_deserialize() raises:
+def example_deserialize() raises:
     """Demonstrate deserialization."""
     print("=== Deserialization ===\n")
 
@@ -68,7 +68,7 @@ fn example_deserialize() raises:
     print()
 
 
-fn example_round_trip() raises:
+def example_round_trip() raises:
     """Demonstrate full round-trip."""
     print("=== Round-Trip ===\n")
 
@@ -93,7 +93,7 @@ fn example_round_trip() raises:
     print()
 
 
-fn example_gpu_deserialize() raises:
+def example_gpu_deserialize() raises:
     """Demonstrate GPU-accelerated deserialization."""
     print("=== GPU-Accelerated Deserialization ===\n")
 
@@ -106,7 +106,7 @@ fn example_gpu_deserialize() raises:
     print()
 
 
-fn example_direct_method_calls() raises:
+def example_direct_method_calls() raises:
     """Show that you can also call methods directly."""
     print("=== Direct Method Calls ===\n")
 
@@ -127,7 +127,7 @@ fn example_direct_method_calls() raises:
     print()
 
 
-fn main() raises:
+def main() raises:
     print("\n╔════════════════════════════════════════════╗")
     print("║  Struct Serialization/Deserialization     ║")
     print("╚════════════════════════════════════════════╝\n")

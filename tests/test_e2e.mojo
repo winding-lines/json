@@ -15,12 +15,12 @@ from std.testing import assert_equal, assert_true, assert_raises, TestSuite
 from mojson import loads, dumps, Value
 
 
-fn _is_gpu_mode() -> Bool:
+def _is_gpu_mode() -> Bool:
     var val = getenv("MOJSON_TEST_GPU")
     return len(val) > 0 and val != "0" and val != "false"
 
 
-fn _test_loads(json: String) raises -> Value:
+def _test_loads(json: String) raises -> Value:
     if _is_gpu_mode():
         return loads[target="gpu"](json)
     return loads[target="cpu"](json)

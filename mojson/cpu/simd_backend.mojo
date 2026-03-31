@@ -38,7 +38,7 @@ struct FastParser:
     var pos: Int
     var raw_json: String  # Keep reference for lazy values
 
-    fn __init__(out self, s: String):
+    def __init__(out self, s: String):
         """Initialize parser - single copy of input for safe access."""
         var bytes_span = s.as_bytes()
         var n = len(bytes_span)
@@ -55,27 +55,27 @@ struct FastParser:
         self.raw_json = s
 
     @always_inline
-    fn peek(self) -> UInt8:
+    def peek(self) -> UInt8:
         """Peek current byte."""
         return self.data[self.pos]
 
     @always_inline
-    fn at_end(self) -> Bool:
+    def at_end(self) -> Bool:
         """Check if at end."""
         return self.pos >= self.length
 
     @always_inline
-    fn advance(mut self):
+    def advance(mut self):
         """Advance by 1."""
         self.pos += 1
 
     @always_inline
-    fn advance_n(mut self, n: Int):
+    def advance_n(mut self, n: Int):
         """Advance by n."""
         self.pos += n
 
     @always_inline
-    fn skip_whitespace(mut self):
+    def skip_whitespace(mut self):
         """Skip whitespace - tight loop with ref for speed."""
         ref data = self.data
         var length = self.length
@@ -85,7 +85,7 @@ struct FastParser:
                 return
             self.pos += 1
 
-    fn parse(mut self) raises -> Value:
+    def parse(mut self) raises -> Value:
         """Parse JSON and return a Value."""
         self.skip_whitespace()
 
@@ -106,7 +106,7 @@ struct FastParser:
 
         return result^
 
-    fn parse_value(mut self) raises -> Value:
+    def parse_value(mut self) raises -> Value:
         """Parse any JSON value."""
         self.skip_whitespace()
 
@@ -145,7 +145,7 @@ struct FastParser:
             )
 
     @always_inline
-    fn parse_null(mut self) raises -> Value:
+    def parse_null(mut self) raises -> Value:
         """Parse 'null' literal."""
         if self.pos + 4 <= self.length:
             if (
@@ -160,7 +160,7 @@ struct FastParser:
         raise Error(json_parse_error("Invalid 'null'", self.raw_json, self.pos))
 
     @always_inline
-    fn parse_true(mut self) raises -> Value:
+    def parse_true(mut self) raises -> Value:
         """Parse 'true' literal."""
         if self.pos + 4 <= self.length:
             if (
@@ -175,7 +175,7 @@ struct FastParser:
         raise Error(json_parse_error("Invalid 'true'", self.raw_json, self.pos))
 
     @always_inline
-    fn parse_false(mut self) raises -> Value:
+    def parse_false(mut self) raises -> Value:
         """Parse 'false' literal."""
         if self.pos + 5 <= self.length:
             if (
@@ -192,7 +192,7 @@ struct FastParser:
             json_parse_error("Invalid 'false'", self.raw_json, self.pos)
         )
 
-    fn parse_string(mut self) raises -> Value:
+    def parse_string(mut self) raises -> Value:
         """Parse JSON string."""
         self.advance()  # Skip opening quote
         var start = self.pos
@@ -246,7 +246,7 @@ struct FastParser:
             json_parse_error("Unterminated string", self.raw_json, start - 1)
         )
 
-    fn build_string(
+    def build_string(
         self, start: Int, end: Int, has_escapes: Bool
     ) raises -> Value:
         """Build string value."""
@@ -267,7 +267,7 @@ struct FastParser:
             var unescaped = unescape_json_string(self.data, start, end)
             return Value(String(unsafe_from_utf8=unescaped^))
 
-    fn parse_number(mut self) raises -> Value:
+    def parse_number(mut self) raises -> Value:
         """Parse JSON number."""
         ref data = self.data
         var length = self.length
@@ -379,7 +379,7 @@ struct FastParser:
             return Value(self.parse_int_fast(digit_start, self.pos, negative))
 
     @always_inline
-    fn parse_int_fast(self, start: Int, end: Int, negative: Bool) -> Int64:
+    def parse_int_fast(self, start: Int, end: Int, negative: Bool) -> Int64:
         """Parse integer using 8-digit unrolling."""
         var result: Int64 = 0
         var pos = start
@@ -423,7 +423,7 @@ struct FastParser:
 
         return -result if negative else result
 
-    fn parse_array(mut self) raises -> Value:
+    def parse_array(mut self) raises -> Value:
         """Parse JSON array."""
         ref data = self.data
         var length = self.length
@@ -516,7 +516,7 @@ struct FastParser:
         self.pos = array_end
         return make_array_value(raw, count)
 
-    fn parse_object(mut self) raises -> Value:
+    def parse_object(mut self) raises -> Value:
         """Parse JSON object."""
         var object_start = self.pos
         self.advance()  # Skip '{'
@@ -687,7 +687,7 @@ struct FastParser:
 # =============================================================================
 
 
-fn parse_simd(s: String) raises -> Value:
+def parse_simd(s: String) raises -> Value:
     """Parse JSON using optimized backend.
 
     Args:

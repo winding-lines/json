@@ -5,7 +5,7 @@
 from mojson import loads, dumps, Value
 
 
-fn main() raises:
+def main() raises:
     # Parse a simple JSON object
     var json_str = '{"name": "Alice", "age": 30, "active": true}'
     var data = loads(json_str)

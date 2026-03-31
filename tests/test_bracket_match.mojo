@@ -8,7 +8,7 @@ from std.memory import memcpy
 from mojson.gpu.bracket_match import match_brackets_gpu
 
 
-fn make_char_list(chars: String) -> List[UInt8]:
+def make_char_list(chars: String) -> List[UInt8]:
     """Create a list of char types from a string."""
     var result = List[UInt8](capacity=len(chars))
     for i in range(len(chars)):
@@ -16,7 +16,7 @@ fn make_char_list(chars: String) -> List[UInt8]:
     return result^
 
 
-fn test_simple_braces() raises:
+def test_simple_braces() raises:
     """Test simple case: {}."""
     var ctx = DeviceContext()
 
@@ -45,7 +45,7 @@ fn test_simple_braces() raises:
     print("PASS: test_simple_braces")
 
 
-fn test_nested_braces() raises:
+def test_nested_braces() raises:
     """Test nested: {{}}."""
     var ctx = DeviceContext()
 
@@ -83,7 +83,7 @@ fn test_nested_braces() raises:
     print("PASS: test_nested_braces")
 
 
-fn test_mixed_brackets() raises:
+def test_mixed_brackets() raises:
     """Test mixed: {[]}."""
     var ctx = DeviceContext()
 
@@ -109,7 +109,7 @@ fn test_mixed_brackets() raises:
     print("PASS: test_mixed_brackets")
 
 
-fn test_with_other_chars() raises:
+def test_with_other_chars() raises:
     """Test with colons and commas: {:,}."""
     var ctx = DeviceContext()
 
@@ -135,7 +135,7 @@ fn test_with_other_chars() raises:
     print("PASS: test_with_other_chars")
 
 
-fn test_deeply_nested() raises:
+def test_deeply_nested() raises:
     """Test deeply nested: {{{}}}."""
     var ctx = DeviceContext()
 
@@ -174,7 +174,7 @@ fn test_deeply_nested() raises:
     print("PASS: test_deeply_nested")
 
 
-fn test_sibling_objects() raises:
+def test_sibling_objects() raises:
     """Test sibling objects: {}{}."""
     var ctx = DeviceContext()
 
@@ -200,7 +200,7 @@ fn test_sibling_objects() raises:
     print("PASS: test_sibling_objects")
 
 
-fn main() raises:
+def main() raises:
     print("=== GPU Bracket Matching Tests ===")
     print()
 

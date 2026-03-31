@@ -20,7 +20,7 @@ struct ParserConfig:
     var allow_trailing_comma: Bool
     """Allow trailing commas in arrays and objects. Default: False."""
 
-    fn __init__(
+    def __init__(
         out self,
         max_depth: Int = 0,
         allow_comments: Bool = False,
@@ -38,12 +38,12 @@ struct ParserConfig:
         self.allow_trailing_comma = allow_trailing_comma
 
     @staticmethod
-    fn default() -> Self:
+    def default() -> Self:
         """Create default (strict) parser configuration."""
         return Self()
 
     @staticmethod
-    fn lenient() -> Self:
+    def lenient() -> Self:
         """Create lenient parser configuration allowing common extensions."""
         return Self(
             max_depth=0,
@@ -72,7 +72,7 @@ struct SerializerConfig:
     var escape_forward_slash: Bool
     """Escape forward slashes as \\/. Default: False (for HTML safety)."""
 
-    fn __init__(
+    def __init__(
         out self,
         indent: String = "",
         sort_keys: Bool = False,
@@ -93,12 +93,12 @@ struct SerializerConfig:
         self.escape_forward_slash = escape_forward_slash
 
     @staticmethod
-    fn default() -> Self:
+    def default() -> Self:
         """Create default serializer configuration (compact output)."""
         return Self()
 
     @staticmethod
-    fn pretty(indent: String = "  ") -> Self:
+    def pretty(indent: String = "  ") -> Self:
         """Create pretty-print configuration with given indent."""
         return Self(indent=indent)
 
@@ -106,7 +106,7 @@ struct SerializerConfig:
 # Preprocessing functions for parser config
 
 
-fn preprocess_json(json: String, config: ParserConfig) raises -> String:
+def preprocess_json(json: String, config: ParserConfig) raises -> String:
     """Preprocess JSON according to config options.
 
     This handles:
@@ -135,7 +135,7 @@ fn preprocess_json(json: String, config: ParserConfig) raises -> String:
     return result^
 
 
-fn _strip_comments(json: String) -> String:
+def _strip_comments(json: String) -> String:
     """Remove JavaScript-style comments from JSON.
 
     Handles:
@@ -200,7 +200,7 @@ fn _strip_comments(json: String) -> String:
     return result^
 
 
-fn _remove_trailing_commas(json: String) -> String:
+def _remove_trailing_commas(json: String) -> String:
     """Remove trailing commas from arrays and objects."""
     var result = String()
     var json_bytes = json.as_bytes()
@@ -276,7 +276,7 @@ fn _remove_trailing_commas(json: String) -> String:
     return result^
 
 
-fn _check_depth(json: String, max_depth: Int) raises:
+def _check_depth(json: String, max_depth: Int) raises:
     """Check that JSON doesn't exceed max nesting depth."""
     var json_bytes = json.as_bytes()
     var n = len(json_bytes)

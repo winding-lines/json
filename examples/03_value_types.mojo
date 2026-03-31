@@ -6,7 +6,7 @@ from mojson import loads, dumps, Value, Null, make_array_value, make_object_valu
 from std.collections import List
 
 
-fn main() raises:
+def main() raises:
     # Create Values directly (not from parsing)
     print("Creating Values directly:")
 

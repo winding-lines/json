@@ -6,7 +6,7 @@
 from mojson import loads, jsonpath_query, jsonpath_one
 
 
-fn main() raises:
+def main() raises:
     print("JSONPath Query Examples")
     print("=" * 50)
     print()

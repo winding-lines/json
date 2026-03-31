@@ -23,7 +23,7 @@ struct JSONIterator:
     var input_data: List[UInt8]
     var current_pos: Int
 
-    fn __init__(out self, var result: JSONResult, var input_data: List[UInt8]):
+    def __init__(out self, var result: JSONResult, var input_data: List[UInt8]):
         """Initialize iterator with parsed result.
 
         Args:
@@ -34,15 +34,15 @@ struct JSONIterator:
         self.input_data = input_data^
         self.current_pos = 0
 
-    fn reset(mut self):
+    def reset(mut self):
         """Reset iterator to beginning."""
         self.current_pos = 0
 
-    fn size(self) -> Int:
+    def size(self) -> Int:
         """Get input data size."""
         return len(self.input_data)
 
-    fn goto_key(mut self, key: String) raises -> Int:
+    def goto_key(mut self, key: String) raises -> Int:
         """Move to the value associated with a key in the current object.
 
         Args:
@@ -117,11 +117,11 @@ struct JSONIterator:
 
         return -1
 
-    fn _is_whitespace(self, c: UInt8) -> Bool:
+    def _is_whitespace(self, c: UInt8) -> Bool:
         """Check if character is whitespace."""
         return c == 0x20 or c == 0x09 or c == 0x0A or c == 0x0D
 
-    fn goto_array_index(mut self, index: Int) raises -> Int:
+    def goto_array_index(mut self, index: Int) raises -> Int:
         """Move to element at index in the current array.
 
         Args:
@@ -193,7 +193,7 @@ struct JSONIterator:
 
         return -1
 
-    fn goto_next_sibling(mut self) raises -> Int:
+    def goto_next_sibling(mut self) raises -> Int:
         """Move to the next sibling element.
 
         Returns:
@@ -223,7 +223,7 @@ struct JSONIterator:
             return self.current_pos
         return -1
 
-    fn get_value(self) raises -> String:
+    def get_value(self) raises -> String:
         """Get the value at the current position.
 
         Returns:
@@ -327,7 +327,7 @@ struct JSONIterator:
 
         return self._extract_primitive(curr_byte)
 
-    fn _extract_primitive(self, start: Int) raises -> String:
+    def _extract_primitive(self, start: Int) raises -> String:
         """Extract a primitive value (number, true, false, null)."""
         var end_pos = start
         while end_pos < self.size():
@@ -342,7 +342,7 @@ struct JSONIterator:
             end_pos += 1
         return self._extract_range(start, end_pos)
 
-    fn _extract_string(self, start: Int) raises -> String:
+    def _extract_string(self, start: Int) raises -> String:
         """Extract a string value (without quotes)."""
         if start >= self.size() or self.input_data[start] != CHAR_QUOTE:
             return ""
@@ -381,7 +381,7 @@ struct JSONIterator:
         var bytes = unescape_json_string(self.input_data, i, end_pos)
         return String(unsafe_from_utf8=bytes^)
 
-    fn _extract_range(self, start: Int, end: Int) raises -> String:
+    def _extract_range(self, start: Int, end: Int) raises -> String:
         """Extract a range of characters as a string."""
         if start >= self.size() or end > self.size() or start >= end:
             return ""
@@ -397,7 +397,7 @@ struct JSONIterator:
         )
         return String(unsafe_from_utf8=bytes^)
 
-    fn get_current_char(self) -> UInt8:
+    def get_current_char(self) -> UInt8:
         """Get the character at current structural position."""
         if self.current_pos >= self.result.total_result_size():
             return 0
@@ -408,7 +408,7 @@ struct JSONIterator:
 
         return self.input_data[pos]
 
-    fn get_position(self) -> Int:
+    def get_position(self) -> Int:
         """Get the current byte position in the input."""
         if self.current_pos >= self.result.total_result_size():
             return self.size()

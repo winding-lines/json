@@ -1,7 +1,7 @@
 # mojson - JSON error handling with line/column information
 
 
-fn compute_line_column(source: String, position: Int) -> Tuple[Int, Int]:
+def compute_line_column(source: String, position: Int) -> Tuple[Int, Int]:
     """Compute line and column number from byte position.
 
     Args:
@@ -28,7 +28,7 @@ fn compute_line_column(source: String, position: Int) -> Tuple[Int, Int]:
     return (line, column)
 
 
-fn format_error_context(
+def format_error_context(
     source: String, position: Int, context_chars: Int = 20
 ) -> String:
     """Format error with surrounding context.
@@ -71,7 +71,7 @@ fn format_error_context(
     return result^
 
 
-fn json_parse_error(message: String, source: String, position: Int) -> String:
+def json_parse_error(message: String, source: String, position: Int) -> String:
     """Create a detailed JSON parse error message.
 
     Args:
@@ -103,7 +103,7 @@ fn json_parse_error(message: String, source: String, position: Int) -> String:
     )
 
 
-fn find_error_position(source: String) -> Int:
+def find_error_position(source: String) -> Int:
     """Try to find the position of a JSON error by scanning.
 
     This is a heuristic to find where parsing likely failed.

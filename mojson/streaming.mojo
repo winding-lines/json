@@ -29,7 +29,7 @@ struct StreamingParser:
     var _eof: Bool
     var _closed: Bool
 
-    fn __init__(out self, path: String, chunk_size: Int = 65536) raises:
+    def __init__(out self, path: String, chunk_size: Int = 65536) raises:
         """Open a file for streaming parsing.
 
         Args:
@@ -42,13 +42,13 @@ struct StreamingParser:
         self._eof = False
         self._closed = False
 
-    fn close(mut self) raises:
+    def close(mut self) raises:
         """Close the file handle."""
         if not self._closed:
             self._file.close()
             self._closed = True
 
-    fn has_next(mut self) -> Bool:
+    def has_next(mut self) -> Bool:
         """Check if there are more JSON values to read.
 
         Returns:
@@ -70,7 +70,7 @@ struct StreamingParser:
 
         return self._has_complete_line()
 
-    fn next(mut self) raises -> Value:
+    def next(mut self) raises -> Value:
         """Read and parse the next JSON value.
 
         Returns:
@@ -105,7 +105,7 @@ struct StreamingParser:
 
         return loads[target="cpu"](line)
 
-    fn _read_chunk(mut self) raises:
+    def _read_chunk(mut self) raises:
         """Read a chunk of data from the file."""
         var chunk = self._file.read(self._chunk_size)
         if len(chunk) == 0:
@@ -113,7 +113,7 @@ struct StreamingParser:
         else:
             self._buffer += chunk
 
-    fn _has_complete_line(self) -> Bool:
+    def _has_complete_line(self) -> Bool:
         """Check if buffer contains a complete line."""
         var buffer_bytes = self._buffer.as_bytes()
         for i in range(len(buffer_bytes)):
@@ -124,7 +124,7 @@ struct StreamingParser:
             return True
         return False
 
-    fn _extract_line(mut self) raises -> String:
+    def _extract_line(mut self) raises -> String:
         """Extract the next line from the buffer."""
         var buffer_bytes = self._buffer.as_bytes()
         var n = len(buffer_bytes)
@@ -153,7 +153,7 @@ struct StreamingParser:
         return line^
 
 
-fn stream_ndjson(
+def stream_ndjson(
     path: String,
     chunk_size: Int = 65536,
 ) raises -> StreamingParser:
@@ -177,7 +177,7 @@ fn stream_ndjson(
     return StreamingParser(path, chunk_size)
 
 
-fn stream_json_array(
+def stream_json_array(
     path: String,
     chunk_size: Int = 65536,
 ) raises -> ArrayStreamingParser:
@@ -218,7 +218,7 @@ struct ArrayStreamingParser:
     var _started: Bool
     var _depth: Int
 
-    fn __init__(out self, path: String, chunk_size: Int = 65536) raises:
+    def __init__(out self, path: String, chunk_size: Int = 65536) raises:
         """Open a JSON array file for streaming.
 
         Args:
@@ -233,13 +233,13 @@ struct ArrayStreamingParser:
         self._started = False
         self._depth = 0
 
-    fn close(mut self) raises:
+    def close(mut self) raises:
         """Close the file handle."""
         if not self._closed:
             self._file.close()
             self._closed = True
 
-    fn has_next(mut self) -> Bool:
+    def has_next(mut self) -> Bool:
         """Check if there are more array elements."""
         if self._closed:
             return False
@@ -254,7 +254,7 @@ struct ArrayStreamingParser:
         # Check if we can find a complete element
         return self._has_complete_element()
 
-    fn next(mut self) raises -> Value:
+    def next(mut self) raises -> Value:
         """Read and parse the next array element."""
         if self._closed:
             raise Error("ArrayStreamingParser is closed")
@@ -268,7 +268,7 @@ struct ArrayStreamingParser:
 
         return self._extract_element()
 
-    fn _read_chunk(mut self) raises:
+    def _read_chunk(mut self) raises:
         """Read a chunk of data."""
         var chunk = self._file.read(self._chunk_size)
         if len(chunk) == 0:
@@ -276,7 +276,7 @@ struct ArrayStreamingParser:
         else:
             self._buffer += chunk
 
-    fn _skip_to_array_start(mut self) raises:
+    def _skip_to_array_start(mut self) raises:
         """Skip whitespace and find the opening bracket."""
         while True:
             var buffer_bytes = self._buffer.as_bytes()
@@ -302,7 +302,7 @@ struct ArrayStreamingParser:
 
             self._read_chunk()
 
-    fn _has_complete_element(mut self) -> Bool:
+    def _has_complete_element(mut self) -> Bool:
         """Check if buffer contains a complete element."""
         var buffer_bytes = self._buffer.as_bytes()
         var n = len(buffer_bytes)
@@ -369,7 +369,7 @@ struct ArrayStreamingParser:
 
         return False
 
-    fn _extract_element(mut self) raises -> Value:
+    def _extract_element(mut self) raises -> Value:
         """Extract and parse the next element."""
         var buffer_bytes = self._buffer.as_bytes()
         var n = len(buffer_bytes)
@@ -449,7 +449,7 @@ struct ArrayStreamingParser:
         return loads[target="cpu"](element_str)
 
 
-fn _is_empty_line(s: String) -> Bool:
+def _is_empty_line(s: String) -> Bool:
     """Check if string is empty or whitespace-only."""
     var s_bytes = s.as_bytes()
     for i in range(len(s_bytes)):

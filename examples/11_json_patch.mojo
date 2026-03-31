@@ -6,7 +6,7 @@
 from mojson import loads, dumps, apply_patch, merge_patch, create_merge_patch
 
 
-fn main() raises:
+def main() raises:
     print("JSON Patch Examples")
     print("=" * 50)
     print()

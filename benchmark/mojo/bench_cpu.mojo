@@ -19,7 +19,7 @@ from std.sys import argv
 from mojson import loads
 
 
-fn main() raises:
+def main() raises:
     # Get file path from command line or use default
     var args = argv()
     var path: String
@@ -51,10 +51,10 @@ fn main() raises:
 
     @parameter
     @always_inline
-    fn bench_loads(mut b: Bencher) raises capturing:
+    def bench_loads(mut b: Bencher) raises capturing:
         @parameter
         @always_inline
-        fn call_fn() raises:
+        def call_fn() raises:
             var v = loads(json_str)
             _ = v.is_object()
 

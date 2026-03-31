@@ -12,7 +12,7 @@ from .parser import loads
 from .serialize import dumps
 
 
-fn parse_ndjson[target: StaticString = "cpu"](s: String) raises -> List[Value]:
+def parse_ndjson[target: StaticString = "cpu"](s: String) raises -> List[Value]:
     """Parse NDJSON (newline-delimited JSON) string into a list of Values.
 
     Each non-empty line is parsed as a separate JSON value.
@@ -47,7 +47,7 @@ fn parse_ndjson[target: StaticString = "cpu"](s: String) raises -> List[Value]:
     return result^
 
 
-fn parse_ndjson_lazy[
+def parse_ndjson_lazy[
     target: StaticString = "cpu"
 ](s: String) raises -> NDJSONIterator[target]:
     """Create a lazy iterator over NDJSON lines.
@@ -83,13 +83,13 @@ struct NDJSONIterator[target: StaticString = "cpu"]:
     var _pos: Int
     var _len: Int
 
-    fn __init__(out self, data: String):
+    def __init__(out self, data: String):
         """Initialize iterator with NDJSON data."""
         self._data = data
         self._pos = 0
         self._len = len(data)
 
-    fn has_next(self) -> Bool:
+    def has_next(self) -> Bool:
         """Check if there are more JSON values to parse."""
         # Skip whitespace and find next non-empty content
         var pos = self._pos
@@ -108,7 +108,7 @@ struct NDJSONIterator[target: StaticString = "cpu"]:
 
         return False
 
-    fn next(mut self) raises -> Value:
+    def next(mut self) raises -> Value:
         """Parse and return the next JSON value.
 
         Raises:
@@ -153,7 +153,7 @@ struct NDJSONIterator[target: StaticString = "cpu"]:
         # Parse the line
         return loads[Self.target](line)
 
-    fn count_remaining(self) -> Int:
+    def count_remaining(self) -> Int:
         """Count remaining non-empty lines without consuming them."""
         var count = 0
         var pos = self._pos
@@ -181,7 +181,7 @@ struct NDJSONIterator[target: StaticString = "cpu"]:
         return count
 
 
-fn dumps_ndjson(values: List[Value]) -> String:
+def dumps_ndjson(values: List[Value]) -> String:
     """Serialize a list of Values to NDJSON format.
 
     Args:
@@ -209,7 +209,7 @@ fn dumps_ndjson(values: List[Value]) -> String:
 # Helper functions
 
 
-fn _split_lines(s: String) -> List[String]:
+def _split_lines(s: String) -> List[String]:
     """Split string into lines."""
     var result = List[String]()
     var s_bytes = s.as_bytes()
@@ -235,7 +235,7 @@ fn _split_lines(s: String) -> List[String]:
     return result^
 
 
-fn _is_whitespace_only(s: String) -> Bool:
+def _is_whitespace_only(s: String) -> Bool:
     """Check if string contains only whitespace."""
     var s_bytes = s.as_bytes()
     for i in range(len(s_bytes)):

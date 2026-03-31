@@ -22,7 +22,7 @@ from .iterator import JSONIterator
 # =============================================================================
 
 
-fn _build_value_from_simdjson(
+def _build_value_from_simdjson(
     ffi: SimdjsonFFI, value_handle: Int, raw_json: String
 ) raises -> Value:
     """Recursively build a Value tree from simdjson parse result."""
@@ -55,7 +55,7 @@ fn _build_value_from_simdjson(
         raise Error("Unknown JSON value type")
 
 
-fn _parse_cpu_simdjson(s: String) raises -> Value:
+def _parse_cpu_simdjson(s: String) raises -> Value:
     """Parse JSON using simdjson FFI backend."""
     var ffi = SimdjsonFFI()
     var root = ffi.parse(s)
@@ -65,12 +65,12 @@ fn _parse_cpu_simdjson(s: String) raises -> Value:
     return result^
 
 
-fn _parse_cpu_mojo(s: String) raises -> Value:
+def _parse_cpu_mojo(s: String) raises -> Value:
     """Parse JSON using pure Mojo backend (SIMD-accelerated)."""
     return parse_simd(s)
 
 
-fn _parse_cpu[backend: StaticString = "simdjson"](s: String) raises -> Value:
+def _parse_cpu[backend: StaticString = "simdjson"](s: String) raises -> Value:
     """Parse JSON using specified CPU backend.
 
     Parameters:
@@ -97,7 +97,7 @@ fn _parse_cpu[backend: StaticString = "simdjson"](s: String) raises -> Value:
 # =============================================================================
 
 
-fn _parse_gpu(s: String) raises -> Value:
+def _parse_gpu(s: String) raises -> Value:
     """Parse JSON using GPU."""
     var data = s.as_bytes()
     var start = 0
@@ -147,7 +147,7 @@ fn _parse_gpu(s: String) raises -> Value:
     return _build_value(iterator, s)
 
 
-fn _parse_string_value(s: String, start: Int) raises -> Value:
+def _parse_string_value(s: String, start: Int) raises -> Value:
     """Parse a string value."""
     var data = s.as_bytes()
     var n = len(data)
@@ -179,7 +179,7 @@ fn _parse_string_value(s: String, start: Int) raises -> Value:
     return Value(String(unsafe_from_utf8=unescaped^))
 
 
-fn _parse_number_value(s: String, start: Int) raises -> Value:
+def _parse_number_value(s: String, start: Int) raises -> Value:
     """Parse a number value."""
     var data = s.as_bytes()
     var num_str = String()
@@ -209,7 +209,7 @@ fn _parse_number_value(s: String, start: Int) raises -> Value:
         return Value(atol(num_str))
 
 
-fn _build_value(mut iter: JSONIterator, json: String) raises -> Value:
+def _build_value(mut iter: JSONIterator, json: String) raises -> Value:
     """Build a Value tree from JSONIterator."""
     var c = iter.get_current_char()
 
@@ -246,7 +246,7 @@ fn _build_value(mut iter: JSONIterator, json: String) raises -> Value:
     raise Error(json_parse_error("Unexpected character", json, pos))
 
 
-fn _build_array(mut iter: JSONIterator, json: String) raises -> Value:
+def _build_array(mut iter: JSONIterator, json: String) raises -> Value:
     """Build an array Value."""
     var raw = iter.get_value()
     var raw_bytes = raw.as_bytes()
@@ -281,7 +281,7 @@ fn _build_array(mut iter: JSONIterator, json: String) raises -> Value:
     return make_array_value(raw, count)
 
 
-fn _build_object(mut iter: JSONIterator, json: String) raises -> Value:
+def _build_object(mut iter: JSONIterator, json: String) raises -> Value:
     """Build an object Value."""
     var raw = iter.get_value()
     var raw_bytes = raw.as_bytes()
@@ -338,7 +338,7 @@ fn _build_object(mut iter: JSONIterator, json: String) raises -> Value:
 # =============================================================================
 
 
-fn loads[target: StaticString = "cpu"](s: String) raises -> Value:
+def loads[target: StaticString = "cpu"](s: String) raises -> Value:
     """Deserialize JSON string to a Value (like Python's json.loads).
 
     Parameters:
@@ -374,7 +374,7 @@ fn loads[target: StaticString = "cpu"](s: String) raises -> Value:
         return _parse_cpu["mojo"](s)
 
 
-fn loads[
+def loads[
     target: StaticString = "cpu"
 ](s: String, config: ParserConfig) raises -> Value:
     """Deserialize JSON with custom configuration.
@@ -397,7 +397,7 @@ fn loads[
     return loads[target](preprocessed)
 
 
-fn loads[
+def loads[
     target: StaticString = "cpu",
     format: StaticString = "json",
 ](s: String) raises -> List[Value]:
@@ -433,7 +433,7 @@ fn loads[
     return result^
 
 
-fn loads[lazy: Bool](s: String) raises -> LazyValue:
+def loads[lazy: Bool](s: String) raises -> LazyValue:
     """Create a lazy JSON value for on-demand parsing (CPU only).
 
     Parameters:
@@ -459,7 +459,7 @@ fn loads[lazy: Bool](s: String) raises -> LazyValue:
     return LazyValue(s)
 
 
-fn load[target: StaticString = "cpu"](mut f: FileHandle) raises -> Value:
+def load[target: StaticString = "cpu"](mut f: FileHandle) raises -> Value:
     """Deserialize JSON from file to a Value (like Python's json.load).
 
     Parameters:
@@ -479,7 +479,7 @@ fn load[target: StaticString = "cpu"](mut f: FileHandle) raises -> Value:
     return loads[target](content)
 
 
-fn load[
+def load[
     target: StaticString = "cpu"
 ](mut f: FileHandle, config: ParserConfig) raises -> Value:
     """Deserialize JSON from file with custom configuration.
@@ -498,7 +498,7 @@ fn load[
     return loads[target](content, config)
 
 
-fn load[target: StaticString = "cpu"](path: String) raises -> Value:
+def load[target: StaticString = "cpu"](path: String) raises -> Value:
     """Load JSON/NDJSON from file path. Auto-detects format from extension.
 
     Parameters:
@@ -527,7 +527,7 @@ fn load[target: StaticString = "cpu"](path: String) raises -> Value:
     return loads[target](content)
 
 
-fn _list_to_array_value(values: List[Value]) -> Value:
+def _list_to_array_value(values: List[Value]) -> Value:
     """Convert List[Value] to a Value containing an array."""
     var count = len(values)
     if count == 0:
@@ -542,7 +542,7 @@ fn _list_to_array_value(values: List[Value]) -> Value:
     return make_array_value(raw, count)
 
 
-fn load[streaming: Bool](path: String) raises -> StreamingParser:
+def load[streaming: Bool](path: String) raises -> StreamingParser:
     """Stream large files line by line (CPU only, for memory efficiency).
 
     Parameters:
@@ -572,7 +572,7 @@ fn load[streaming: Bool](path: String) raises -> StreamingParser:
 
 
 # Backwards compatibility aliases (deprecated, use loads/load instead)
-fn loads_with_config[
+def loads_with_config[
     target: StaticString = "cpu"
 ](s: String, config: ParserConfig) raises -> Value:
     """Deprecated: Use loads(s, config) instead."""

@@ -25,7 +25,7 @@ from mojson.types import JSONInput
 from std.gpu.host import DeviceContext
 
 
-fn main() raises:
+def main() raises:
     var args = argv()
     var path: String
     if len(args) > 1:
@@ -125,10 +125,10 @@ fn main() raises:
 
     @parameter
     @always_inline
-    fn bench_gpu_loads(mut b: Bencher) raises capturing:
+    def bench_gpu_loads(mut b: Bencher) raises capturing:
         @parameter
         @always_inline
-        fn call_fn() raises:
+        def call_fn() raises:
             var v = loads[target="gpu"](content)
             _ = v.is_object()
 

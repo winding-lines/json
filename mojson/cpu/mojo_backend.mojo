@@ -44,7 +44,7 @@ comptime CHAR_ESCAPE: UInt8 = 8  # Backslash
 
 
 @always_inline
-fn get_char_type(c: UInt8) -> UInt8:
+def get_char_type(c: UInt8) -> UInt8:
     """Fast character type lookup using switch-like logic."""
     if c == 0x20 or c == 0x09 or c == 0x0A or c == 0x0D:
         return CHAR_WS
@@ -70,20 +70,20 @@ fn get_char_type(c: UInt8) -> UInt8:
 
 
 @always_inline
-fn is_whitespace(c: UInt8) -> Bool:
+def is_whitespace(c: UInt8) -> Bool:
     """Check if character is JSON whitespace (space, tab, newline, carriage return).
     """
     return c == 0x20 or c == 0x09 or c == 0x0A or c == 0x0D
 
 
 @always_inline
-fn is_digit(c: UInt8) -> Bool:
+def is_digit(c: UInt8) -> Bool:
     """Check if character is a digit 0-9."""
     return c >= UInt8(ord("0")) and c <= UInt8(ord("9"))
 
 
 @always_inline
-fn parse_int_direct(
+def parse_int_direct(
     data: List[UInt8], start: Int, end: Int, negative: Bool
 ) -> Int64:
     """Parse integer directly without string conversion.
@@ -131,41 +131,41 @@ struct MojoJSONParser:
     var length: Int
     var pos: Int
 
-    fn __init__(out self, var data: List[UInt8]):
+    def __init__(out self, var data: List[UInt8]):
         """Initialize parser with byte data."""
         self.length = len(data)
         self.data = data^
         self.pos = 0
 
     @always_inline
-    fn peek(self) -> UInt8:
+    def peek(self) -> UInt8:
         """Peek at current character without advancing."""
         if self.pos >= self.length:
             return 0
         return self.data[self.pos]
 
     @always_inline
-    fn get_byte(self, idx: Int) -> UInt8:
+    def get_byte(self, idx: Int) -> UInt8:
         """Get byte at specific index."""
         return self.data[idx]
 
     @always_inline
-    fn advance(mut self):
+    def advance(mut self):
         """Advance position by 1."""
         self.pos += 1
 
     @always_inline
-    fn advance_n(mut self, n: Int):
+    def advance_n(mut self, n: Int):
         """Advance position by n."""
         self.pos += n
 
     @always_inline
-    fn at_end(self) -> Bool:
+    def at_end(self) -> Bool:
         """Check if at end of input."""
         return self.pos >= self.length
 
     @always_inline
-    fn skip_whitespace(mut self):
+    def skip_whitespace(mut self):
         """Skip whitespace characters (optimized with unrolling)."""
         # Unrolled loop - process 4 bytes at a time for common case
         while self.pos + 4 <= self.length:
@@ -193,7 +193,7 @@ struct MojoJSONParser:
                 return
             self.pos += 1
 
-    fn parse(mut self, raw_json: String) raises -> Value:
+    def parse(mut self, raw_json: String) raises -> Value:
         """Parse JSON and return a Value."""
         self.skip_whitespace()
 
@@ -213,7 +213,7 @@ struct MojoJSONParser:
 
         return result^
 
-    fn parse_value(mut self, raw_json: String) raises -> Value:
+    def parse_value(mut self, raw_json: String) raises -> Value:
         """Parse any JSON value."""
         self.skip_whitespace()
 
@@ -245,7 +245,7 @@ struct MojoJSONParser:
                 )
             )
 
-    fn parse_null(mut self, raw_json: String) raises -> Value:
+    def parse_null(mut self, raw_json: String) raises -> Value:
         """Parse 'null' literal."""
         if (
             self.pos + 4 <= self.length
@@ -259,7 +259,7 @@ struct MojoJSONParser:
         else:
             raise Error(json_parse_error("Invalid 'null'", raw_json, self.pos))
 
-    fn parse_true(mut self, raw_json: String) raises -> Value:
+    def parse_true(mut self, raw_json: String) raises -> Value:
         """Parse 'true' literal."""
         if (
             self.pos + 4 <= self.length
@@ -273,7 +273,7 @@ struct MojoJSONParser:
         else:
             raise Error(json_parse_error("Invalid 'true'", raw_json, self.pos))
 
-    fn parse_false(mut self, raw_json: String) raises -> Value:
+    def parse_false(mut self, raw_json: String) raises -> Value:
         """Parse 'false' literal."""
         if (
             self.pos + 5 <= self.length
@@ -288,7 +288,7 @@ struct MojoJSONParser:
         else:
             raise Error(json_parse_error("Invalid 'false'", raw_json, self.pos))
 
-    fn parse_string(mut self, raw_json: String) raises -> Value:
+    def parse_string(mut self, raw_json: String) raises -> Value:
         """Parse a JSON string value."""
         if self.peek() != UInt8(ord('"')):
             raise Error(json_parse_error("Expected '\"'", raw_json, self.pos))
@@ -381,7 +381,7 @@ struct MojoJSONParser:
             var unescaped = unescape_json_string(self.data, start, end)
             return Value(String(unsafe_from_utf8=unescaped^))
 
-    fn parse_number(mut self, raw_json: String) raises -> Value:
+    def parse_number(mut self, raw_json: String) raises -> Value:
         """Parse a JSON number (integer or float)."""
         var start = self.pos
         var is_float = False
@@ -458,7 +458,7 @@ struct MojoJSONParser:
                 parse_int_direct(self.data, digit_start, self.pos, negative)
             )
 
-    fn parse_array(mut self, raw_json: String) raises -> Value:
+    def parse_array(mut self, raw_json: String) raises -> Value:
         """Parse a JSON array."""
         if self.peek() != UInt8(ord("[")):
             raise Error(json_parse_error("Expected '['", raw_json, self.pos))
@@ -562,7 +562,7 @@ struct MojoJSONParser:
 
         return make_array_value(raw, count)
 
-    fn parse_object(mut self, raw_json: String) raises -> Value:
+    def parse_object(mut self, raw_json: String) raises -> Value:
         """Parse a JSON object."""
         if self.peek() != UInt8(ord("{")):
             raise Error(json_parse_error("Expected '{'", raw_json, self.pos))
@@ -742,7 +742,7 @@ struct MojoJSONParser:
 # =============================================================================
 
 
-fn parse_mojo(s: String) raises -> Value:
+def parse_mojo(s: String) raises -> Value:
     """Parse JSON using pure Mojo backend.
 
     Args:

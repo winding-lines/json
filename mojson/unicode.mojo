@@ -3,7 +3,7 @@
 from std.collections import List
 
 
-fn hex_digit_value(c: UInt8) -> Int:
+def hex_digit_value(c: UInt8) -> Int:
     """Convert a hex digit character to its value.
 
     Returns -1 if not a valid hex digit.
@@ -17,7 +17,7 @@ fn hex_digit_value(c: UInt8) -> Int:
     return -1
 
 
-fn parse_unicode_escape(data: List[UInt8], start: Int) -> Int:
+def parse_unicode_escape(data: List[UInt8], start: Int) -> Int:
     """Parse a 4-digit hex unicode escape sequence.
 
     Args:
@@ -40,17 +40,17 @@ fn parse_unicode_escape(data: List[UInt8], start: Int) -> Int:
     return result
 
 
-fn is_high_surrogate(code_point: Int) -> Bool:
+def is_high_surrogate(code_point: Int) -> Bool:
     """Check if code point is a high surrogate (U+D800 - U+DBFF)."""
     return code_point >= 0xD800 and code_point <= 0xDBFF
 
 
-fn is_low_surrogate(code_point: Int) -> Bool:
+def is_low_surrogate(code_point: Int) -> Bool:
     """Check if code point is a low surrogate (U+DC00 - U+DFFF)."""
     return code_point >= 0xDC00 and code_point <= 0xDFFF
 
 
-fn decode_surrogate_pair(high: Int, low: Int) -> Int:
+def decode_surrogate_pair(high: Int, low: Int) -> Int:
     """Decode a surrogate pair to a full code point.
 
     Args:
@@ -63,7 +63,7 @@ fn decode_surrogate_pair(high: Int, low: Int) -> Int:
     return 0x10000 + ((high - 0xD800) << 10) + (low - 0xDC00)
 
 
-fn encode_utf8(code_point: Int, mut bytes: List[UInt8]):
+def encode_utf8(code_point: Int, mut bytes: List[UInt8]):
     """Encode a Unicode code point as UTF-8 bytes.
 
     Args:
@@ -90,7 +90,7 @@ fn encode_utf8(code_point: Int, mut bytes: List[UInt8]):
         bytes.append(UInt8(0x80 | (code_point & 0x3F)))
 
 
-fn unescape_json_string(data: List[UInt8], start: Int, end: Int) -> List[UInt8]:
+def unescape_json_string(data: List[UInt8], start: Int, end: Int) -> List[UInt8]:
     """Unescape a JSON string, handling all escape sequences including unicode.
 
     Args:

@@ -6,7 +6,7 @@ from std.testing import assert_raises
 from mojson import loads, dumps, Value
 
 
-fn parse_safely(json_str: String) -> String:
+def parse_safely(json_str: String) -> String:
     """Attempt to parse JSON and return result or error message."""
     try:
         var result = loads(json_str)
@@ -15,7 +15,7 @@ fn parse_safely(json_str: String) -> String:
         return "Error: " + String(e)
 
 
-fn main() raises:
+def main() raises:
     print("JSON Error Handling Examples")
     print("=" * 40)
     print()

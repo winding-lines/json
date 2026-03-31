@@ -3,7 +3,7 @@
 from .value import Value
 
 
-fn _escape_string(s: String) -> String:
+def _escape_string(s: String) -> String:
     """Escape special characters in a string for JSON."""
     var result = String('"')
     var s_bytes = s.as_bytes()
@@ -36,7 +36,7 @@ fn _escape_string(s: String) -> String:
     return result^
 
 
-fn to_string(v: Value) -> String:
+def to_string(v: Value) -> String:
     """Convert a Value to a JSON string (compact)."""
     if v.is_null():
         return "null"
@@ -53,7 +53,7 @@ fn to_string(v: Value) -> String:
     return "null"
 
 
-fn _format_json(raw: String, indent: String, current_indent: String) -> String:
+def _format_json(raw: String, indent: String, current_indent: String) -> String:
     """Format raw JSON with indentation.
 
     Args:
@@ -179,7 +179,7 @@ fn _format_json(raw: String, indent: String, current_indent: String) -> String:
     return result^
 
 
-fn _to_string_pretty(
+def _to_string_pretty(
     v: Value, indent: String, current_indent: String
 ) -> String:
     """Convert a Value to a pretty-printed JSON string."""
@@ -198,7 +198,7 @@ fn _to_string_pretty(
     return "null"
 
 
-fn dumps(v: Value, indent: String = "") -> String:
+def dumps(v: Value, indent: String = "") -> String:
     """Serialize a Value to JSON string (like Python's json.dumps).
 
     Args:
@@ -218,7 +218,7 @@ fn dumps(v: Value, indent: String = "") -> String:
     return _to_string_pretty(v, indent, "")
 
 
-fn dumps(v: Value, config: SerializerConfig) -> String:
+def dumps(v: Value, config: SerializerConfig) -> String:
     """Serialize a Value with custom configuration.
 
     Args:
@@ -250,7 +250,7 @@ fn dumps(v: Value, config: SerializerConfig) -> String:
     return result^
 
 
-fn dumps[format: StaticString = "json"](values: List[Value]) -> String:
+def dumps[format: StaticString = "json"](values: List[Value]) -> String:
     """Serialize a list of Values to NDJSON string.
 
     Parameters:
@@ -280,7 +280,7 @@ fn dumps[format: StaticString = "json"](values: List[Value]) -> String:
     return result^
 
 
-fn dump(v: Value, mut f: FileHandle) raises:
+def dump(v: Value, mut f: FileHandle) raises:
     """Serialize a Value and write to file (like Python's json.dump).
 
     Args:
@@ -294,7 +294,7 @@ fn dump(v: Value, mut f: FileHandle) raises:
     f.write(dumps(v))
 
 
-fn dump(v: Value, mut f: FileHandle, indent: String) raises:
+def dump(v: Value, mut f: FileHandle, indent: String) raises:
     """Serialize a Value with indentation and write to file.
 
     Args:
@@ -309,7 +309,7 @@ fn dump(v: Value, mut f: FileHandle, indent: String) raises:
     f.write(dumps(v, indent))
 
 
-fn dump[
+def dump[
     format: StaticString = "json"
 ](values: List[Value], mut f: FileHandle) raises:
     """Serialize a list of Values to NDJSON and write to file.
@@ -333,7 +333,7 @@ fn dump[
 
 
 # Backwards compatibility alias (deprecated, use dumps(v, config) instead)
-fn dumps_with_config(v: Value, config: SerializerConfig) -> String:
+def dumps_with_config(v: Value, config: SerializerConfig) -> String:
     """Serialize a Value with custom configuration.
 
     Args:
@@ -367,7 +367,7 @@ fn dumps_with_config(v: Value, config: SerializerConfig) -> String:
     return result^
 
 
-fn _escape_unicode_chars(s: String) -> String:
+def _escape_unicode_chars(s: String) -> String:
     """Escape non-ASCII characters as \\uXXXX."""
     var result = String()
     var s_bytes = s.as_bytes()
@@ -409,7 +409,7 @@ fn _escape_unicode_chars(s: String) -> String:
     return result^
 
 
-fn _escape_forward_slashes(s: String) -> String:
+def _escape_forward_slashes(s: String) -> String:
     """Escape forward slashes as \\/ for HTML embedding safety."""
     var result = String()
     var s_bytes = s.as_bytes()
@@ -443,7 +443,7 @@ fn _escape_forward_slashes(s: String) -> String:
     return result^
 
 
-fn _sort_object_keys(json: String) -> String:
+def _sort_object_keys(json: String) -> String:
     """Sort object keys alphabetically (simple implementation).
 
     Note: This is a basic implementation that works for simple objects.
@@ -459,32 +459,32 @@ from .config import SerializerConfig
 
 
 # Helper functions for building JSON strings from basic types
-fn to_json_string(s: String) -> String:
+def to_json_string(s: String) -> String:
     """Convert a String to JSON string format (with quotes and escaping)."""
     return _escape_string(s)
 
 
-fn to_json_value(val: String) -> String:
+def to_json_value(val: String) -> String:
     """Convert String to JSON."""
     return to_json_string(val)
 
 
-fn to_json_value(val: Int) -> String:
+def to_json_value(val: Int) -> String:
     """Convert Int to JSON."""
     return String(val)
 
 
-fn to_json_value(val: Int64) -> String:
+def to_json_value(val: Int64) -> String:
     """Convert Int64 to JSON."""
     return String(val)
 
 
-fn to_json_value(val: Float64) -> String:
+def to_json_value(val: Float64) -> String:
     """Convert Float64 to JSON."""
     return String(val)
 
 
-fn to_json_value(val: Bool) -> String:
+def to_json_value(val: Bool) -> String:
     """Convert Bool to JSON."""
     return "true" if val else "false"
 
@@ -499,19 +499,19 @@ trait Serializable:
             var name: String
             var age: Int
 
-            fn to_json(self) -> String:
+            def to_json(self) -> String:
                 return '{"name":' + to_json_value(self.name) +
                        ',"age":' + to_json_value(self.age) + '}'
 
         var json = serialize(Person("Alice", 30))  # {"name":"Alice","age":30}
     """
 
-    fn to_json(self) -> String:
+    def to_json(self) -> String:
         """Serialize this object to a JSON string."""
         ...
 
 
-fn serialize[T: Serializable](obj: T) -> String:
+def serialize[T: Serializable](obj: T) -> String:
     """Serialize an object to JSON string.
 
     The object must implement the Serializable trait with a to_json() method.
