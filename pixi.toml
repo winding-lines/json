@@ -38,6 +38,7 @@ gdown = ">=5.0"           # Google Drive CLI for downloading benchmark datasets
 
 [environments]
 default = { features = ["dev"], solve-group = "default" }
+dev     = { features = ["dev"], solve-group = "default" }
 
 [tasks]
 # Format
