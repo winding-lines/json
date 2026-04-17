@@ -279,7 +279,7 @@ def extract_positions_gpu(
     ctx.enqueue_copy(h_total, d_block_totals)
     ctx.synchronize()
 
-    var total_count = Int(h_total.unsafe_ptr()[0])
+    var total_count = Int(h_total.unsafe_ptr()[])
 
     if total_count == 0:
         return (List[Int32](), List[UInt8](), 0)
